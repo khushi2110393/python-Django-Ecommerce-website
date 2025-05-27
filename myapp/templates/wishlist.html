@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Beauty & Cosmetics">
+    <meta name="keywords" content="Ashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist | Beauty & Cosmetics</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <!-- Page Preloader -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Logo -->
+                <div class="col-xl-3 col-lg-2">
+                    <div class="header__logo">
+                        <a href="{% url 'index' %}">
+                            <img src="{% static 'img/logo.png' %}" alt="Logo">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="col-xl-6 col-lg-7">
+                    <nav class="header__menu">
+                        <ul>
+                            <li><a href="{% url 'index' %}">Home</a></li>
+                            <li><a href="{% url 'face' %}">Face</a></li>
+                            <li><a href="{% url 'eyes' %}">Eyes</a></li>
+                            <li><a href="{% url 'lips' %}">Lips</a></li>
+                            <li><a href="{% url 'hair' %}">Hair</a></li>
+                            <li><a href="{% url 'nails' %}">Nails</a></li>
+                            <li><a href="{% url 'shop' %}">Shop</a></li>
+                            <li>
+                                <a href="#"></a>
+                                <ul class="dropdown">
+                                    <li><a href="{% url 'shop_cart' %}">Shop Cart</a></li>
+                                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Right Side (Login/Register, Icons) -->
+                <div class="col-lg-3">
+                    <div class="header__right">
+                        <div class="header__right__auth">
+                            {% if user.is_authenticated %}
+                                <h2></h2>
+                                <a href="{% url 'logout' %}"></a>
+                            {% else %}
+                                <a href="{% url 'login' %}">Login</a>
+                                <a href="{% url 'register' %}">Register</a>
+                            {% endif %}
+                        </div>
+                        <ul class="header__right__widget">
+                            <li><span class=""></span></li>
+                            <li>
+                                <a href="{% url 'wishlist' %}">
+                                    <span class="icon_heart_alt"></span>
+                                    <div class="tip">{{ wishlist_count }}</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'shop_cart' %}">
+                                    <span class="icon_bag_alt"></span>
+                                    <div class="tip">{{ cart_count }}</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+    <!-- Wishlist Section Begin -->
+    <section class="wishlist spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="mb-4">My Wishlist</h2>
+
+                    {% if wishlist_items %}
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in wishlist_items %}
+                                    <tr>
+                                        <td>
+                                            {% if item.product.p_img %}
+                                                <img src="{{ item.product.p_img.url }}" alt="{{ item.product.p_name }}" width="100">
+                                            {% else %}
+                                                <p>No image available</p>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.product.p_name }}</td>
+                                        <td>₹{{ item.product.p_price }}</td>
+                                        <td>
+                                            <a href="{% url 'remove_from_wishlist' item.id %}" class="btn btn-danger btn-sm">
+                                                Remove
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <div class="alert alert-info">Your wishlist is empty.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Wishlist Section End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-7">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="{% url 'index' %}">
+                                <img src="{% static 'img/logo.png' %}" alt="">
+                            </a>
+                        </div>
+                        <p>"Luxury cosmetics to enhance your natural beauty  because your skin deserves the best!"</p>
+                       
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-5">
+                    <div class="footer__widget">
+                        <h6>Quick links</h6>
+                        <ul>
+                            <li><a href="{% url 'index' %}">Home</a></li>
+                            <li><a href="{% url 'shop' %}">shop</a></li>
+                            <li><a href="{% url 'contact' %}">Contact</a></li>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="footer__widget">
+                        <h6>Account</h6>
+                        <ul>
+                            
+                            <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                            <li><a href="{% url 'wishlist' %}">Wishlist</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8 col-sm-8">
+                    <div class="footer__newslatter">
+                        <h6></h6>
+                       
+                        <div class="footer__social">
+                            
+                            <a href="https://www.instagram.com/pbcosmetics001/" target="_blank">
+                                <i class="fa-brands fa-instagram"></i> <!-- Correct Instagram Icon -->
+
+                            <a href="{% url 'contact' %}">
+                                <i class="fa-solid fa-phone"></i> <!-- Contact Icon -->
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer__copyright__text">
+                        <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'js/mixitup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.nicescroll.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

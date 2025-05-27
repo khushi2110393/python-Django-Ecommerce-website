@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+        .payment-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .payment-info {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            color: #e0e0e0;
+            text-align: left;
+            display: inline-block;
+        }
+        .payment-info span {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: #ff6f61;
+            font-weight: bold;
+        }
+        #pay-button {
+            background-color: #ff6f61;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        #pay-button:hover {
+            background-color: #ff3b2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <h1>Payment Details</h1>
+        <div class="payment-info">
+            <span>Order ID: <span class="highlight">{{ order.id }}</span></span>
+            <span>Total Amount: <span class="highlight">₹{{ order.total_amount }}</span></span>
+           
+        </div>
+        <button id="pay-button">Pay Now</button>
+    </div>
+
+    <script>
+        var options = {
+            "key": "{{ razorpay_key_id }}",
+            "amount": "{{ amount_in_paise }}",  // Amount in paise
+            "currency": "{{ currency }}",
+            "name": "PB Beauty & Cosmetics",
+            "description": "Payment for Order #{{ order.id }}",
+            "order_id": "{{ razorpay_order_id }}",
+            "handler": function (response) {
+                // Create a hidden form and submit it
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ callback_url }}";
+    
+                var paymentIdInput = document.createElement('input');
+                paymentIdInput.type = 'hidden';
+                paymentIdInput.name = 'razorpay_payment_id';
+                paymentIdInput.value = response.razorpay_payment_id;
+                form.appendChild(paymentIdInput);
+    
+                var orderIdInput = document.createElement('input');
+                orderIdInput.type = 'hidden';
+                orderIdInput.name = 'razorpay_order_id';
+                orderIdInput.value = "{{ razorpay_order_id }}";
+                form.appendChild(orderIdInput);
+    
+                var signatureInput = document.createElement('input');
+                signatureInput.type = 'hidden';
+                signatureInput.name = 'razorpay_signature';
+                signatureInput.value = response.razorpay_signature;
+                form.appendChild(signatureInput);
+    
+                document.body.appendChild(form);
+                form.submit();
+            },
+            "prefill": {
+                "name": "{{ request.user.get_full_name }}",
+                "email": "{{ request.user.email }}",  // Add user email if available
+            },
+            "theme": {
+                "color": "#F37254"
+            }
+        };
+        var rzp = new Razorpay(options);
+    
+        document.getElementById('pay-button').onclick = function (e) {
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>

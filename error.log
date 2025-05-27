@@ -1,0 +1,11 @@
+CommandError: Unable to serialize database: 'charmap' codec can't encode character '\u2116' in position 37: character maps to <undefined>
+Exception ignored in: <generator object cursor_iter at 0x000002B640419470>
+Traceback (most recent call last):
+  File "C:\Users\khushi\OneDrive\Desktop\ashion-master\adminpanel\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 2115, in cursor_iter
+    cursor.close()
+  File "C:\Users\khushi\OneDrive\Desktop\ashion-master\adminpanel\venv\Lib\site-packages\MySQLdb\cursors.py", line 103, in close
+    self._discard()
+  File "C:\Users\khushi\OneDrive\Desktop\ashion-master\adminpanel\venv\Lib\site-packages\MySQLdb\cursors.py", line 95, in _discard
+    while con.next_result() == 0:  # -1 means no more data.
+          ^^^^^^^^^^^^^^^^^
+MySQLdb.OperationalError: (2006, '')
